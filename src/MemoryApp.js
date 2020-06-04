@@ -32,17 +32,30 @@ class MemoryApp extends Component{
 		  {id: 14, cardState: CardState.HIDING, backgroundColor: 'lightskyblue'},
 		  {id: 15, cardState: CardState.HIDING, backgroundColor: 'lightskyblue'}
 		];
-		this.state = {cards: shuffle(cards)};
+		this.state = {cards: shuffle(cards), noClick: false};
+		
+		this.handleClick = this.handleClick.bind(this);
 	}
 	
+	handleClick(id) {
+		this.setState(prevState => {
+			let cards = prevState.cards.map(card => (
+				card.id === id ? {
+					...card,
+					cardState: card.cardState === CardState.HIDING ? CardState.MATCHING : CardState.HIDING
+				} : card
+			));
+			return {cards};
+		});
+	}
 	
 	render() {
 		const cards = this.state.cards.map(card => (
 			<Card 
 				key={card.id} 
-				showing={false}
+				showing={card.cardState !== CardState.HIDING}
 				backgroundColor={card.backgroundColor}
-				onClick={()=> {}}
+				onClick={()=> this.handleClick(card.id)}
 			/>
 		));
 		return(
