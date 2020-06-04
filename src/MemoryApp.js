@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import shuffle from 'shuffle-array';
 import Card from './Card';
 import Navbar from './Navbar';
+import './MemoryApp.css';
 
 const CardState = {
   HIDING: 0,
@@ -40,7 +41,10 @@ class MemoryApp extends Component{
 		return(
 			<div>
 				<Navbar />
-				{cards}
+				<div className='grid'>
+					{cards}
+				</div>
+				
 			</div>
 		);
 	}

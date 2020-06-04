@@ -1,0 +1,5 @@
+.grid {
+	display: grid;
+	grid: 200px 200px/ auto auto auto auto auto auto auto auto;
+	grid-gap: 10px;
+}
