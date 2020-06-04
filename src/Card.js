@@ -7,19 +7,22 @@ const Card = (props) => {
 	let style = {};
 	
 	if(props.showing){
-		style.backGroundColor = props.backGroundColor;
+		style.backgroundColor = props.backgroundColor;
 	}
 	
 	return (
-		<div className='card-container'>
-			
-		</div> 
+		<div 
+			className='card-container'
+			onClick={props.onClick}
+			style={style}
+		/> 
 	)
 }
 
 Card.propTypes = {
 	showing: PropTypes.bool.isRequired,
-	backGroundColor: PropTypes.string.isRequired
+	backgroundColor: PropTypes.string.isRequired,
+	onClick: PropTypes.func.isRequired
 }
 
 export default Card;

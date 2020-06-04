@@ -37,7 +37,14 @@ class MemoryApp extends Component{
 	
 	
 	render() {
-		const cards = this.state.cards.map(card => (<Card key={card.id} />));
+		const cards = this.state.cards.map(card => (
+			<Card 
+				key={card.id} 
+				showing={false}
+				backgroundColor={card.backgroundColor}
+				onClick={()=> {}}
+			/>
+		));
 		return(
 			<div>
 				<Navbar />
