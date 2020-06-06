@@ -35,18 +35,63 @@ class MemoryApp extends Component{
 		this.state = {cards: shuffle(cards), noClick: false};
 		
 		this.handleClick = this.handleClick.bind(this);
+		this.handleNewGame = this.handleNewGame.bind(this);
 	}
 	
 	handleClick(id) {
-		this.setState(prevState => {
-			let cards = prevState.cards.map(card => (
-				card.id === id ? {
-					...card,
-					cardState: card.cardState === CardState.HIDING ? CardState.MATCHING : CardState.HIDING
-				} : card
-			));
-			return {cards};
-		});
+		const mapCardState = (cards, idsToChange, newCardState) => {
+			return cards.map(card => {
+				if(idsToChange.includes(card.id)){
+					return {
+						...card,
+						cardState: newCardState
+					}
+				}
+				else
+					return card;
+			});
+		}
+		
+		const foundCard = this.state.cards.find(card => card.id===id);
+		
+		// if matched or revealed card, return
+		if(this.state.noClick || foundCard.cardState !== CardState.HIDING)
+			return;
+		
+		let noClick = false;
+		
+		let cards = mapCardState(this.state.cards, [id], CardState.SHOWING);
+		
+		const showingCards = cards.filter((card) => card.cardState === CardState.SHOWING);
+		
+		const ids = showingCards.map(card => card.id);
+		
+		if(showingCards.length === 2 && showingCards[0].backgroundColor === showingCards[1].backgroundColor){
+			cards = mapCardState(cards, ids, CardState.MATCHING)
+		}
+		else if(showingCards.length===2){
+			// Colors don't match so we hide the two cards.
+			let hidingCards = mapCardState(cards, ids, CardState.HIDING);
+			noClick = true;
+			// We use cards to allow cards to be showing for some time.
+			this.setState({cards, noClick},()=> {
+				setTimeout(() => {
+					// Here we finally hide the two showing cards and return.
+					this.setState({cards: hidingCards, noClick: false});
+				}, 700);
+			});
+			return;
+		}
+		this.setState({cards, noClick});
+	}
+	
+	handleNewGame() {
+		let cards = this.state.cards.map(card => ({
+			...card,
+			cardState: CardState.HIDING
+		}));
+		cards = shuffle(cards);
+		this.setState({cards});
 	}
 	
 	render() {
@@ -60,7 +105,7 @@ class MemoryApp extends Component{
 		));
 		return(
 			<div>
-				<Navbar />
+				<Navbar onNewGame={this.handleNewGame}/>
 				<div className='grid'>
 					{cards}
 				</div>
