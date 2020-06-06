@@ -32,7 +32,7 @@ class MemoryApp extends Component{
 		  {id: 14, cardState: CardState.HIDING, backgroundColor: 'lightskyblue'},
 		  {id: 15, cardState: CardState.HIDING, backgroundColor: 'lightskyblue'}
 		];
-		this.state = {cards: shuffle(cards), noClick: false};
+		this.state = {cards: shuffle(cards), noClick: false, winner: false};
 		
 		this.handleClick = this.handleClick.bind(this);
 		this.handleNewGame = this.handleNewGame.bind(this);
@@ -52,6 +52,10 @@ class MemoryApp extends Component{
 			});
 		}
 		
+		const hasWon = (cards) => {
+			return cards.every(card => card.cardState === CardState.MATCHING);
+		}
+		
 		const foundCard = this.state.cards.find(card => card.id===id);
 		
 		// if matched or revealed card, return
@@ -67,7 +71,7 @@ class MemoryApp extends Component{
 		const ids = showingCards.map(card => card.id);
 		
 		if(showingCards.length === 2 && showingCards[0].backgroundColor === showingCards[1].backgroundColor){
-			cards = mapCardState(cards, ids, CardState.MATCHING)
+			cards = mapCardState(cards, ids, CardState.MATCHING);
 		}
 		else if(showingCards.length===2){
 			// Colors don't match so we hide the two cards.
@@ -82,7 +86,8 @@ class MemoryApp extends Component{
 			});
 			return;
 		}
-		this.setState({cards, noClick});
+		let winner = hasWon(cards);
+		this.setState({cards, noClick, winner});
 	}
 	
 	handleNewGame() {
@@ -105,7 +110,7 @@ class MemoryApp extends Component{
 		));
 		return(
 			<div>
-				<Navbar onNewGame={this.handleNewGame}/>
+				<Navbar onNewGame={this.handleNewGame} isWinner={this.state.winner}/>
 				<div className='grid'>
 					{cards}
 				</div>
